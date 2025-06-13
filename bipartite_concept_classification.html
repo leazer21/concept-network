@@ -1,0 +1,258 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#1f77b4", "id": "Bauhaus", "label": "Bauhaus", "shape": "dot", "size": 50, "title": "Bauhaus"}, {"color": "#1f77b4", "id": "Constructivism", "label": "Constructivism", "shape": "dot", "size": 50, "title": "Constructivism"}, {"color": "#1f77b4", "id": "Cubism", "label": "Cubism", "shape": "dot", "size": 50, "title": "Cubism"}, {"color": "#1f77b4", "id": "Dadaism (Abstract)", "label": "Dadaism (Abstract)", "shape": "dot", "size": 50, "title": "Dadaism (Abstract)"}, {"color": "#1f77b4", "id": "De Stijl and Neoplasticism", "label": "De Stijl and Neoplasticism", "shape": "dot", "size": 50, "title": "De Stijl and Neoplasticism"}, {"color": "#1f77b4", "id": "Expressionism (Abstract)", "label": "Expressionism (Abstract)", "shape": "dot", "size": 50, "title": "Expressionism (Abstract)"}, {"color": "#1f77b4", "id": "Fauvism", "label": "Fauvism", "shape": "dot", "size": 50, "title": "Fauvism"}, {"color": "#1f77b4", "id": "Futurism", "label": "Futurism", "shape": "dot", "size": 50, "title": "Futurism"}, {"color": "#1f77b4", "id": "Geometrical Abstract Art", "label": "Geometrical Abstract Art", "shape": "dot", "size": 50, "title": "Geometrical Abstract Art"}, {"color": "#1f77b4", "id": "Modern Architecture", "label": "Modern Architecture", "shape": "dot", "size": 50, "title": "Modern Architecture"}, {"color": "#1f77b4", "id": "Neo-Impressionism", "label": "Neo-Impressionism", "shape": "dot", "size": 50, "title": "Neo-Impressionism"}, {"color": "#1f77b4", "id": "Non-Geometrical Abstract Art", "label": "Non-Geometrical Abstract Art", "shape": "dot", "size": 50, "title": "Non-Geometrical Abstract Art"}, {"color": "#1f77b4", "id": "Orphism", "label": "Orphism", "shape": "dot", "size": 50, "title": "Orphism"}, {"color": "#1f77b4", "id": "Purism", "label": "Purism", "shape": "dot", "size": 50, "title": "Purism"}, {"color": "#1f77b4", "id": "Suprematism", "label": "Suprematism", "shape": "dot", "size": 50, "title": "Suprematism"}, {"color": "#1f77b4", "id": "Surrealism (Abstract)", "label": "Surrealism (Abstract)", "shape": "dot", "size": 50, "title": "Surrealism (Abstract)"}, {"color": "#1f77b4", "id": "Synthetism", "label": "Synthetism", "shape": "dot", "size": 50, "title": "Synthetism"}, {"color": "#1f77b4", "id": "z\"Jack of Diamonds\"", "label": "z\"Jack of Diamonds\"", "shape": "dot", "size": 50, "title": "z\"Jack of Diamonds\""}, {"color": "#1f77b4", "id": "z\"The Blue Rider\"", "label": "z\"The Blue Rider\"", "shape": "dot", "size": 50, "title": "z\"The Blue Rider\""}, {"color": "#1f77b4", "id": "z\"The Bridge\"", "label": "z\"The Bridge\"", "shape": "dot", "size": 50, "title": "z\"The Bridge\""}, {"color": "#1f77b4", "id": "\"Decorative tendency\"", "label": "\"Decorative tendency\"", "shape": "dot", "size": 50, "title": "\"Decorative tendency\""}, {"color": "#1f77b4", "id": "Japanese prints", "label": "Japanese prints", "shape": "dot", "size": 50, "title": "Japanese prints"}, {"color": "#1f77b4", "id": "Machine Esthetic", "label": "Machine Esthetic", "shape": "dot", "size": 50, "title": "Machine Esthetic"}, {"color": "#1f77b4", "id": "Near-Eastern Art", "label": "Near-Eastern Art", "shape": "dot", "size": 50, "title": "Near-Eastern Art"}, {"color": "#1f77b4", "id": "Negro Sculpture", "label": "Negro Sculpture", "shape": "dot", "size": 50, "title": "Negro Sculpture"}, {"color": "#1f77b4", "id": "\"Structural tendency\"", "label": "\"Structural tendency\"", "shape": "dot", "size": 50, "title": "\"Structural tendency\""}, {"color": "#1f77b4", "id": "Albers", "label": "Albers", "shape": "dot", "size": 50, "title": "Albers"}, {"color": "#1f77b4", "id": "Archipenko", "label": "Archipenko", "shape": "dot", "size": 50, "title": "Archipenko"}, {"color": "#1f77b4", "id": "Arp", "label": "Arp", "shape": "dot", "size": 50, "title": "Arp"}, {"color": "#1f77b4", "id": "Balla", "label": "Balla", "shape": "dot", "size": 50, "title": "Balla"}, {"color": "#1f77b4", "id": "Bayer", "label": "Bayer", "shape": "dot", "size": 50, "title": "Bayer"}, {"color": "#1f77b4", "id": "Boccioni", "label": "Boccioni", "shape": "dot", "size": 50, "title": "Boccioni"}, {"color": "#1f77b4", "id": "Brancusi", "label": "Brancusi", "shape": "dot", "size": 50, "title": "Brancusi"}, {"color": "#1f77b4", "id": "Braque", "label": "Braque", "shape": "dot", "size": 50, "title": "Braque"}, {"color": "#1f77b4", "id": "Breuer", "label": "Breuer", "shape": "dot", "size": 50, "title": "Breuer"}, {"color": "#1f77b4", "id": "Carra", "label": "Carra", "shape": "dot", "size": 50, "title": "Carra"}, {"color": "#1f77b4", "id": "Cezanne", "label": "Cezanne", "shape": "dot", "size": 50, "title": "Cezanne"}, {"color": "#1f77b4", "id": "deChirico", "label": "deChirico", "shape": "dot", "size": 50, "title": "deChirico"}, {"color": "#1f77b4", "id": "Degas", "label": "Degas", "shape": "dot", "size": 50, "title": "Degas"}, {"color": "#1f77b4", "id": "Delaunay", "label": "Delaunay", "shape": "dot", "size": 50, "title": "Delaunay"}, {"color": "#1f77b4", "id": "Denis", "label": "Denis", "shape": "dot", "size": 50, "title": "Denis"}, {"color": "#1f77b4", "id": "Derain", "label": "Derain", "shape": "dot", "size": 50, "title": "Derain"}, {"color": "#1f77b4", "id": "Doesburg", "label": "Doesburg", "shape": "dot", "size": 50, "title": "Doesburg"}, {"color": "#1f77b4", "id": "Duchamp", "label": "Duchamp", "shape": "dot", "size": 50, "title": "Duchamp"}, {"color": "#1f77b4", "id": "Ernst", "label": "Ernst", "shape": "dot", "size": 50, "title": "Ernst"}, {"color": "#1f77b4", "id": "Gabo", "label": "Gabo", "shape": "dot", "size": 50, "title": "Gabo"}, {"color": "#1f77b4", "id": "Gauguin", "label": "Gauguin", "shape": "dot", "size": 50, "title": "Gauguin"}, {"color": "#1f77b4", "id": "Giacometti", "label": "Giacometti", "shape": "dot", "size": 50, "title": "Giacometti"}, {"color": "#1f77b4", "id": "Gleizes", "label": "Gleizes", "shape": "dot", "size": 50, "title": "Gleizes"}, {"color": "#1f77b4", "id": "Gris", "label": "Gris", "shape": "dot", "size": 50, "title": "Gris"}, {"color": "#1f77b4", "id": "Gropius", "label": "Gropius", "shape": "dot", "size": 50, "title": "Gropius"}, {"color": "#1f77b4", "id": "Jeanneret", "label": "Jeanneret", "shape": "dot", "size": 50, "title": "Jeanneret"}, {"color": "#1f77b4", "id": "Kandinsky", "label": "Kandinsky", "shape": "dot", "size": 50, "title": "Kandinsky"}, {"color": "#1f77b4", "id": "Kiesler", "label": "Kiesler", "shape": "dot", "size": 50, "title": "Kiesler"}, {"color": "#1f77b4", "id": "Klee", "label": "Klee", "shape": "dot", "size": 50, "title": "Klee"}, {"color": "#1f77b4", "id": "Laurens", "label": "Laurens", "shape": "dot", "size": 50, "title": "Laurens"}, {"color": "#1f77b4", "id": "Le Corbusier", "label": "Le Corbusier", "shape": "dot", "size": 50, "title": "Le Corbusier"}, {"color": "#1f77b4", "id": "L\u00e9ger", "label": "L\u00e9ger", "shape": "dot", "size": 50, "title": "L\u00e9ger"}, {"color": "#1f77b4", "id": "Lipchitz", "label": "Lipchitz", "shape": "dot", "size": 50, "title": "Lipchitz"}, {"color": "#1f77b4", "id": "Lissitzky", "label": "Lissitzky", "shape": "dot", "size": 50, "title": "Lissitzky"}, {"color": "#1f77b4", "id": "Malevich", "label": "Malevich", "shape": "dot", "size": 50, "title": "Malevich"}, {"color": "#1f77b4", "id": "Man Ray", "label": "Man Ray", "shape": "dot", "size": 50, "title": "Man Ray"}, {"color": "#1f77b4", "id": "Marc", "label": "Marc", "shape": "dot", "size": 50, "title": "Marc"}, {"color": "#1f77b4", "id": "Marcoussis", "label": "Marcoussis", "shape": "dot", "size": 50, "title": "Marcoussis"}, {"color": "#1f77b4", "id": "Masson", "label": "Masson", "shape": "dot", "size": 50, "title": "Masson"}, {"color": "#1f77b4", "id": "Matisse", "label": "Matisse", "shape": "dot", "size": 50, "title": "Matisse"}, {"color": "#1f77b4", "id": "Metzinger", "label": "Metzinger", "shape": "dot", "size": 50, "title": "Metzinger"}, {"color": "#1f77b4", "id": "Miro", "label": "Miro", "shape": "dot", "size": 50, "title": "Miro"}, {"color": "#1f77b4", "id": "Moholy-Nagy", "label": "Moholy-Nagy", "shape": "dot", "size": 50, "title": "Moholy-Nagy"}, {"color": "#1f77b4", "id": "Mondrian", "label": "Mondrian", "shape": "dot", "size": 50, "title": "Mondrian"}, {"color": "#1f77b4", "id": "Negro Art", "label": "Negro Art", "shape": "dot", "size": 50, "title": "Negro Art"}, {"color": "#1f77b4", "id": "Oud", "label": "Oud", "shape": "dot", "size": 50, "title": "Oud"}, {"color": "#1f77b4", "id": "Ozenfant", "label": "Ozenfant", "shape": "dot", "size": 50, "title": "Ozenfant"}, {"color": "#1f77b4", "id": "Pevsner", "label": "Pevsner", "shape": "dot", "size": 50, "title": "Pevsner"}, {"color": "#1f77b4", "id": "Picabia", "label": "Picabia", "shape": "dot", "size": 50, "title": "Picabia"}, {"color": "#1f77b4", "id": "Picasso", "label": "Picasso", "shape": "dot", "size": 50, "title": "Picasso"}, {"color": "#1f77b4", "id": "Redon", "label": "Redon", "shape": "dot", "size": 50, "title": "Redon"}, {"color": "#1f77b4", "id": "Rietveld", "label": "Rietveld", "shape": "dot", "size": 50, "title": "Rietveld"}, {"color": "#1f77b4", "id": "Rodchenko", "label": "Rodchenko", "shape": "dot", "size": 50, "title": "Rodchenko"}, {"color": "#1f77b4", "id": "Rousseau", "label": "Rousseau", "shape": "dot", "size": 50, "title": "Rousseau"}, {"color": "#1f77b4", "id": "Russolo", "label": "Russolo", "shape": "dot", "size": 50, "title": "Russolo"}, {"color": "#1f77b4", "id": "Sant\u0027Elia", "label": "Sant\u0027Elia", "shape": "dot", "size": 50, "title": "Sant\u0027Elia"}, {"color": "#1f77b4", "id": "Schlemmer", "label": "Schlemmer", "shape": "dot", "size": 50, "title": "Schlemmer"}, {"color": "#1f77b4", "id": "Schwitters", "label": "Schwitters", "shape": "dot", "size": 50, "title": "Schwitters"}, {"color": "#1f77b4", "id": "Serusir", "label": "Serusir", "shape": "dot", "size": 50, "title": "Serusir"}, {"color": "#1f77b4", "id": "Seurat", "label": "Seurat", "shape": "dot", "size": 50, "title": "Seurat"}, {"color": "#1f77b4", "id": "Severini", "label": "Severini", "shape": "dot", "size": 50, "title": "Severini"}, {"color": "#1f77b4", "id": "Signac", "label": "Signac", "shape": "dot", "size": 50, "title": "Signac"}, {"color": "#1f77b4", "id": "Tanguy", "label": "Tanguy", "shape": "dot", "size": 50, "title": "Tanguy"}, {"color": "#1f77b4", "id": "Tatlin", "label": "Tatlin", "shape": "dot", "size": 50, "title": "Tatlin"}, {"color": "#1f77b4", "id": "vanderRohe", "label": "vanderRohe", "shape": "dot", "size": 50, "title": "vanderRohe"}, {"color": "#1f77b4", "id": "Van Gogh", "label": "Van Gogh", "shape": "dot", "size": 50, "title": "Van Gogh"}, {"color": "#1f77b4", "id": "Vantongerloo", "label": "Vantongerloo", "shape": "dot", "size": 50, "title": "Vantongerloo"}, {"color": "#1f77b4", "id": "Vesnin", "label": "Vesnin", "shape": "dot", "size": 50, "title": "Vesnin"}, {"color": "#1f77b4", "id": "Villon", "label": "Villon", "shape": "dot", "size": 50, "title": "Villon"}, {"color": "#1f77b4", "id": "Barcelona", "label": "Barcelona", "shape": "dot", "size": 50, "title": "Barcelona"}, {"color": "#1f77b4", "id": "Berlin", "label": "Berlin", "shape": "dot", "size": 50, "title": "Berlin"}, {"color": "#1f77b4", "id": "Cologne", "label": "Cologne", "shape": "dot", "size": 50, "title": "Cologne"}, {"color": "#1f77b4", "id": "Dessau", "label": "Dessau", "shape": "dot", "size": 50, "title": "Dessau"}, {"color": "#1f77b4", "id": "Dresden", "label": "Dresden", "shape": "dot", "size": 50, "title": "Dresden"}, {"color": "#1f77b4", "id": "Europe", "label": "Europe", "shape": "dot", "size": 50, "title": "Europe"}, {"color": "#1f77b4", "id": "Germany", "label": "Germany", "shape": "dot", "size": 50, "title": "Germany"}, {"color": "#1f77b4", "id": "Hanover", "label": "Hanover", "shape": "dot", "size": 50, "title": "Hanover"}, {"color": "#1f77b4", "id": "Holland", "label": "Holland", "shape": "dot", "size": 50, "title": "Holland"}, {"color": "#1f77b4", "id": "Leiden", "label": "Leiden", "shape": "dot", "size": 50, "title": "Leiden"}, {"color": "#1f77b4", "id": "London", "label": "London", "shape": "dot", "size": 50, "title": "London"}, {"color": "#1f77b4", "id": "Milan", "label": "Milan", "shape": "dot", "size": 50, "title": "Milan"}, {"color": "#1f77b4", "id": "Moscow", "label": "Moscow", "shape": "dot", "size": 50, "title": "Moscow"}, {"color": "#1f77b4", "id": "Munich ", "label": "Munich ", "shape": "dot", "size": 50, "title": "Munich "}, {"color": "#1f77b4", "id": "Paris", "label": "Paris", "shape": "dot", "size": 50, "title": "Paris"}, {"color": "#1f77b4", "id": "Pont-Aven", "label": "Pont-Aven", "shape": "dot", "size": 50, "title": "Pont-Aven"}, {"color": "#1f77b4", "id": "Prague", "label": "Prague", "shape": "dot", "size": 50, "title": "Prague"}, {"color": "#1f77b4", "id": "Provence", "label": "Provence", "shape": "dot", "size": 50, "title": "Provence"}, {"color": "#1f77b4", "id": "Russia", "label": "Russia", "shape": "dot", "size": 50, "title": "Russia"}, {"color": "#1f77b4", "id": "Switzerland", "label": "Switzerland", "shape": "dot", "size": 50, "title": "Switzerland"}, {"color": "#1f77b4", "id": "Weimar", "label": "Weimar", "shape": "dot", "size": 50, "title": "Weimar"}, {"color": "#1f77b4", "id": "Zurich", "label": "Zurich", "shape": "dot", "size": 50, "title": "Zurich"}, {"color": "#d62728", "id": "Cover", "label": "Cover", "shape": "dot", "size": 100, "title": "Cover"}, {"color": "#d62728", "id": "p15", "label": "p15", "shape": "dot", "size": 100, "title": "p15"}, {"color": "#d62728", "id": "Insert", "label": "Insert", "shape": "dot", "size": 100, "title": "Insert"}, {"color": "#d62728", "id": "p19", "label": "p19", "shape": "dot", "size": 100, "title": "p19"}, {"color": "#d62728", "id": "p21", "label": "p21", "shape": "dot", "size": 100, "title": "p21"}]);
+                  edges = new vis.DataSet([{"from": "Bauhaus", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Bauhaus", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Bauhaus", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Bauhaus", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Constructivism", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Constructivism", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Constructivism", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Constructivism", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Cubism", "title": "Coverage Ratio: 1.00", "to": "Cover", "value": 5.0}, {"from": "Cubism", "title": "Coverage Ratio: 1.00", "to": "p15", "value": 5.0}, {"from": "Cubism", "title": "Coverage Ratio: 1.00", "to": "Insert", "value": 5.0}, {"from": "Cubism", "title": "Coverage Ratio: 1.00", "to": "p19", "value": 5.0}, {"from": "Cubism", "title": "Coverage Ratio: 1.00", "to": "p21", "value": 5.0}, {"from": "Dadaism (Abstract)", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Dadaism (Abstract)", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Dadaism (Abstract)", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "De Stijl and Neoplasticism", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "De Stijl and Neoplasticism", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "De Stijl and Neoplasticism", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Expressionism (Abstract)", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Expressionism (Abstract)", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Expressionism (Abstract)", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Expressionism (Abstract)", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Fauvism", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Fauvism", "title": "Coverage Ratio: 0.80", "to": "p15", "value": 4.0}, {"from": "Fauvism", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Fauvism", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Futurism", "title": "Coverage Ratio: 1.00", "to": "Cover", "value": 5.0}, {"from": "Futurism", "title": "Coverage Ratio: 1.00", "to": "p15", "value": 5.0}, {"from": "Futurism", "title": "Coverage Ratio: 1.00", "to": "Insert", "value": 5.0}, {"from": "Futurism", "title": "Coverage Ratio: 1.00", "to": "p19", "value": 5.0}, {"from": "Futurism", "title": "Coverage Ratio: 1.00", "to": "p21", "value": 5.0}, {"from": "Geometrical Abstract Art", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Geometrical Abstract Art", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Geometrical Abstract Art", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Modern Architecture", "title": "Coverage Ratio: 0.20", "to": "Cover", "value": 1.0}, {"from": "Neo-Impressionism", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Neo-Impressionism", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Neo-Impressionism", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Neo-Impressionism", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Non-Geometrical Abstract Art", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Non-Geometrical Abstract Art", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Non-Geometrical Abstract Art", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Orphism", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Orphism", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Orphism", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Purism", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Purism", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Purism", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Suprematism", "title": "Coverage Ratio: 1.00", "to": "Cover", "value": 5.0}, {"from": "Suprematism", "title": "Coverage Ratio: 1.00", "to": "p15", "value": 5.0}, {"from": "Suprematism", "title": "Coverage Ratio: 1.00", "to": "Insert", "value": 5.0}, {"from": "Suprematism", "title": "Coverage Ratio: 1.00", "to": "p19", "value": 5.0}, {"from": "Suprematism", "title": "Coverage Ratio: 1.00", "to": "p21", "value": 5.0}, {"from": "Surrealism (Abstract)", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Surrealism (Abstract)", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Surrealism (Abstract)", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Synthetism", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Synthetism", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Synthetism", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Synthetism", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "z\"Jack of Diamonds\"", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "z\"The Blue Rider\"", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "z\"The Bridge\"", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "\"Decorative tendency\"", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "Japanese prints", "title": "Coverage Ratio: 1.00", "to": "Cover", "value": 5.0}, {"from": "Japanese prints", "title": "Coverage Ratio: 1.00", "to": "p15", "value": 5.0}, {"from": "Japanese prints", "title": "Coverage Ratio: 1.00", "to": "Insert", "value": 5.0}, {"from": "Japanese prints", "title": "Coverage Ratio: 1.00", "to": "p19", "value": 5.0}, {"from": "Japanese prints", "title": "Coverage Ratio: 1.00", "to": "p21", "value": 5.0}, {"from": "Machine Esthetic", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Machine Esthetic", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Machine Esthetic", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Machine Esthetic", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Near-Eastern Art", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Near-Eastern Art", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Near-Eastern Art", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Negro Sculpture", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Negro Sculpture", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Negro Sculpture", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "\"Structural tendency\"", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "Albers", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Archipenko", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Archipenko", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Arp", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Arp", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Balla", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Balla", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Balla", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Bayer", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Boccioni", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Boccioni", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Boccioni", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Brancusi", "title": "Coverage Ratio: 0.20", "to": "Cover", "value": 1.0}, {"from": "Braque", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Braque", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Braque", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Breuer", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Carra", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Carra", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Carra", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Cezanne", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Cezanne", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Cezanne", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Cezanne", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "deChirico", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Degas", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "Delaunay", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Delaunay", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Delaunay", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Denis", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Derain", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Derain", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Derain", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Doesburg", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Duchamp", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Duchamp", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Duchamp", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Ernst", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Ernst", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Gabo", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Gabo", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Gauguin", "title": "Coverage Ratio: 1.00", "to": "Cover", "value": 5.0}, {"from": "Gauguin", "title": "Coverage Ratio: 1.00", "to": "p15", "value": 5.0}, {"from": "Gauguin", "title": "Coverage Ratio: 1.00", "to": "Insert", "value": 5.0}, {"from": "Gauguin", "title": "Coverage Ratio: 1.00", "to": "p19", "value": 5.0}, {"from": "Gauguin", "title": "Coverage Ratio: 1.00", "to": "p21", "value": 5.0}, {"from": "Giacometti", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Gleizes", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Gleizes", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Gris", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Gris", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Gris", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Gropius", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Gropius", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Jeanneret", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Kandinsky", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Kandinsky", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Kandinsky", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Kiesler", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Klee", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Klee", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Klee", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Laurens", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Le Corbusier", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "L\u00e9ger", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "L\u00e9ger", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "L\u00e9ger", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Lipchitz", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Lissitzky", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Lissitzky", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Malevich", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Malevich", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Man Ray", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Man Ray", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Marc", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Marc", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Marc", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Marcoussis", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Masson", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Matisse", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Matisse", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Matisse", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Metzinger", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Miro", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Moholy-Nagy", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Moholy-Nagy", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Mondrian", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Negro Art", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "Oud", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Ozenfant", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Pevsner", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Pevsner", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Picabia", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Picasso", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Picasso", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Picasso", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Redon", "title": "Coverage Ratio: 0.20", "to": "Cover", "value": 1.0}, {"from": "Rietveld", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Rodchenko", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Rodchenko", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Rousseau", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Rousseau", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Rousseau", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Rousseau", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Russolo", "title": "Coverage Ratio: 0.40", "to": "p15", "value": 2.0}, {"from": "Russolo", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Sant\u0027Elia", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Schlemmer", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Schlemmer", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Schwitters", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Serusir", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Seurat", "title": "Coverage Ratio: 0.60", "to": "Cover", "value": 3.0}, {"from": "Seurat", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Seurat", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Severini", "title": "Coverage Ratio: 0.60", "to": "p15", "value": 3.0}, {"from": "Severini", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Severini", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Signac", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Tanguy", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Tatlin", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Tatlin", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "vanderRohe", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Van Gogh", "title": "Coverage Ratio: 0.80", "to": "Cover", "value": 4.0}, {"from": "Van Gogh", "title": "Coverage Ratio: 0.80", "to": "p15", "value": 4.0}, {"from": "Van Gogh", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Van Gogh", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Vantongerloo", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Vesnin", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Villon", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Villon", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Barcelona", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Berlin", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Berlin", "title": "Coverage Ratio: 0.40", "to": "p19", "value": 2.0}, {"from": "Cologne", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Cologne", "title": "Coverage Ratio: 0.40", "to": "p19", "value": 2.0}, {"from": "Dessau", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Dessau", "title": "Coverage Ratio: 0.40", "to": "p19", "value": 2.0}, {"from": "Dresden", "title": "Coverage Ratio: 0.20", "to": "p15", "value": 1.0}, {"from": "Europe", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "Germany", "title": "Coverage Ratio: 0.20", "to": "p19", "value": 1.0}, {"from": "Hanover", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Holland", "title": "Coverage Ratio: 0.20", "to": "p19", "value": 1.0}, {"from": "Leiden", "title": "Coverage Ratio: 0.20", "to": "Insert", "value": 1.0}, {"from": "London", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Milan", "title": "Coverage Ratio: 0.80", "to": "p15", "value": 4.0}, {"from": "Milan", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Milan", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Milan", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Moscow", "title": "Coverage Ratio: 0.60", "to": "Insert", "value": 3.0}, {"from": "Moscow", "title": "Coverage Ratio: 0.60", "to": "p19", "value": 3.0}, {"from": "Moscow", "title": "Coverage Ratio: 0.60", "to": "p21", "value": 3.0}, {"from": "Munich ", "title": "Coverage Ratio: 0.80", "to": "p15", "value": 4.0}, {"from": "Munich ", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Munich ", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Munich ", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Paris", "title": "Coverage Ratio: 0.80", "to": "p15", "value": 4.0}, {"from": "Paris", "title": "Coverage Ratio: 0.80", "to": "Insert", "value": 4.0}, {"from": "Paris", "title": "Coverage Ratio: 0.80", "to": "p19", "value": 4.0}, {"from": "Paris", "title": "Coverage Ratio: 0.80", "to": "p21", "value": 4.0}, {"from": "Pont-Aven", "title": "Coverage Ratio: 0.20", "to": "Cover", "value": 1.0}, {"from": "Prague", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Provence", "title": "Coverage Ratio: 0.20", "to": "Cover", "value": 1.0}, {"from": "Russia", "title": "Coverage Ratio: 0.40", "to": "p15", "value": 2.0}, {"from": "Russia", "title": "Coverage Ratio: 0.40", "to": "p21", "value": 2.0}, {"from": "Switzerland", "title": "Coverage Ratio: 0.20", "to": "p21", "value": 1.0}, {"from": "Weimar", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Weimar", "title": "Coverage Ratio: 0.40", "to": "p19", "value": 2.0}, {"from": "Zurich", "title": "Coverage Ratio: 0.40", "to": "Insert", "value": 2.0}, {"from": "Zurich", "title": "Coverage Ratio: 0.40", "to": "p19", "value": 2.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
